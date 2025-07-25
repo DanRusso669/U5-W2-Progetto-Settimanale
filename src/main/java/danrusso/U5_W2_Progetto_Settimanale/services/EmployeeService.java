@@ -1,5 +1,7 @@
 package danrusso.U5_W2_Progetto_Settimanale.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeeDTO;
@@ -11,13 +13,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private Cloudinary imgUploader;
 
     public Page<Employee> findAll(int pageNum, int pageSize, String sortBy) {
         if (pageSize > 10) pageSize = 10;
@@ -64,5 +71,18 @@ public class EmployeeService {
 
     public void findByIdAndDelete(UUID employeeId) {
         this.employeeRepository.delete(this.findById(employeeId));
+    }
+
+    public String uploadAvatar(UUID employeeId, MultipartFile file) {
+        Employee found = this.findById(employeeId);
+        try {
+            Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imageUrl = (String) result.get("url");
+            found.setAvatar(imageUrl);
+            this.employeeRepository.save(found);
+            return imageUrl;
+        } catch (Exception ex) {
+            throw new BadRequestException("Something went wrong while saving the image.");
+        }
     }
 }
