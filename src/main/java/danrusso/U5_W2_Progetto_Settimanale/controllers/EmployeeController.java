@@ -39,4 +39,12 @@ public class EmployeeController {
     public Employee findById(@PathVariable UUID employeeId) {
         return this.employeeService.findById(employeeId);
     }
+
+    @PutMapping("/{employeeId}")
+    public Employee findByIdAndUpdate(@PathVariable UUID employeeId, @RequestBody @Validated NewEmployeesDTO payload, BindingResult validationErrors) {
+        if (validationErrors.hasErrors()) {
+            throw new ValidationException(validationErrors.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        }
+        return this.employeeService.findByIdAndUpdate(payload, employeeId);
+    }
 }

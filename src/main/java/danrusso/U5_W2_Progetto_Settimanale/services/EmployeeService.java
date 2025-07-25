@@ -41,4 +41,24 @@ public class EmployeeService {
     public Employee findById(UUID employeeId) {
         return this.employeeRepository.findById(employeeId).orElseThrow(() -> new NotFoundException(employeeId, "Employee"));
     }
+
+    public Employee findByIdAndUpdate(NewEmployeesDTO payload, UUID employeeId) {
+        Employee found = this.findById(employeeId);
+
+        if (!found.getEmail().equals(payload.email())) {
+            this.employeeRepository.findByEmail(payload.email()).ifPresent(employee -> {
+                throw new BadRequestException(payload.email());
+            });
+        }
+
+        found.setUsername(payload.username());
+        found.setName(payload.name());
+        found.setSurname(payload.surname());
+        found.setEmail(payload.email());
+        found.setAvatar("https://ui-avatars.com/api/?name=" + payload.name() + "+" + payload.surname());
+
+        Employee updatedEmp = this.employeeRepository.save(found);
+        System.out.println("Employee with id " + found.getEmployeeId() + " updated successfully.");
+        return updatedEmp;
+    }
 }
