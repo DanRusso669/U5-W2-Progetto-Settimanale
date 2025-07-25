@@ -61,4 +61,8 @@ public class EmployeeService {
         System.out.println("Employee with id " + found.getEmployeeId() + " updated successfully.");
         return updatedEmp;
     }
+
+    public void findByIdAndDelete(UUID employeeId) {
+        this.employeeRepository.delete(this.findById(employeeId));
+    }
 }
