@@ -1,9 +1,6 @@
 package danrusso.U5_W2_Progetto_Settimanale.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -16,7 +13,9 @@ public class Employee {
     private String username;
     private String name;
     private String surname;
+    @Column(unique = true)
     private String email;
+    private String avatar;
 
     public Employee() {
     }
@@ -64,6 +63,14 @@ public class Employee {
         this.email = email;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -72,6 +79,7 @@ public class Employee {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 }
