@@ -3,6 +3,7 @@ package danrusso.U5_W2_Progetto_Settimanale.services;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeesDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class EmployeeService {
@@ -33,5 +36,9 @@ public class EmployeeService {
         Employee savedEmployee = this.employeeRepository.save(newEmployee);
         System.out.println("New employee  with id " + savedEmployee.getEmployeeId() + " added successfully.");
         return savedEmployee;
+    }
+
+    public Employee findById(UUID employeeId) {
+        return this.employeeRepository.findById(employeeId).orElseThrow(() -> new NotFoundException(employeeId, "Employee"));
     }
 }

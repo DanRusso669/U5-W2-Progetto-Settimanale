@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -31,5 +33,10 @@ public class EmployeeController {
             throw new ValidationException(validationErrors.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
         }
         return this.employeeService.saveEmployee(payload);
+    }
+
+    @GetMapping("/{employeeId}")
+    public Employee findById(@PathVariable UUID employeeId) {
+        return this.employeeService.findById(employeeId);
     }
 }
