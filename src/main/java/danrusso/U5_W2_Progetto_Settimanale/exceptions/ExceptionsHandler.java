@@ -17,6 +17,12 @@ public class ExceptionsHandler {
         return new ErrorsPayloadListDTO(ex.getMessage(), LocalDateTime.now(), ex.getErrorMessages());
     }
 
+    @ExceptionHandler(ToManyReservationsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsDTO handleBadRequestEmailException(ToManyReservationsException ex) {
+        return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
     @ExceptionHandler(BadRequestEmailException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsDTO handleBadRequestEmailException(BadRequestEmailException ex) {
