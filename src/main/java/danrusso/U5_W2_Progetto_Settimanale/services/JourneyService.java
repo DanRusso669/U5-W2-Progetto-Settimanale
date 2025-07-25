@@ -65,10 +65,14 @@ public class JourneyService {
     public Journey findByIdAndChangeStatus(UUID id, NewStatusDTO newStatus) {
         Journey found = this.findById(id);
         if (newStatus.status().equalsIgnoreCase("completed")) {
+            if (found.getStatus() == JourneyType.COMPLETED)
+                throw new BadRequestException("Status of journey with id " + found.getJourneyId() + " is already set to COMPLETED.");
             if (found.getDate().isAfter(LocalDate.now()))
                 throw new BadRequestException("A future journey cannot be completed.");
             found.setStatus(JourneyType.COMPLETED);
         } else if (newStatus.status().equalsIgnoreCase("scheduled")) {
+            if (found.getStatus() == JourneyType.SCHEDULED)
+                throw new BadRequestException("Status of journey with id " + found.getJourneyId() + " is already set to SCHEDULED.");
             if (found.getDate().isBefore(LocalDate.now()))
                 throw new BadRequestException("A past journey cannot be scheduled.");
             found.setStatus(JourneyType.SCHEDULED);
