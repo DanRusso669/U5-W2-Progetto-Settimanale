@@ -12,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -33,5 +35,16 @@ public class ReservationController {
         }
 
         return this.reservationService.saveReservation(payload);
+    }
+
+    @GetMapping("/{reservationId}")
+    public Reservation findById(@PathVariable UUID reservationId) {
+        return this.reservationService.findById(reservationId);
+    }
+
+    @DeleteMapping("/{reservationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable UUID reservationId) {
+        this.reservationService.findByIdAndDelete(reservationId);
     }
 }

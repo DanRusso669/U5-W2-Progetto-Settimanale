@@ -5,6 +5,7 @@ import danrusso.U5_W2_Progetto_Settimanale.entities.Journey;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Reservation;
 import danrusso.U5_W2_Progetto_Settimanale.enums.JourneyType;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
+import danrusso.U5_W2_Progetto_Settimanale.exceptions.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.ToManyReservationsException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewReservationDTO;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.ReservationRepository;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ReservationService {
@@ -49,4 +51,28 @@ public class ReservationService {
         System.out.println("Tutto bene");
         return savedReser;
     }
+
+    public Reservation findById(UUID id) {
+        return this.reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(id, "Reservation"));
+    }
+
+//    public Reservation findByIdAndUpdate(UUID id, NewReservationDTO payload) {
+//        Reservation found = this.findById(id);
+//
+//        if (payload.date().isBefore(LocalDate.now())) status = JourneyType.COMPLETED;
+//
+//        found.setDate(payload.date());
+//        found.setDestination(payload.destination());
+//        found.setStatus(status);
+//
+//        Journey updatedJourney = this.journeyRepository.save(found);
+//        System.out.println("Journey with id " + found.getJourneyId() + " updated successfully.");
+//        return updatedJourney;
+//
+//    }
+
+    public void findByIdAndDelete(UUID id) {
+        this.reservationRepository.delete(this.findById(id));
+    }
+
 }
