@@ -37,6 +37,14 @@ public class ReservationController {
         return this.reservationService.saveReservation(payload);
     }
 
+    @PutMapping("/{reservationId}")
+    public Reservation findByIdAndUpdate(@PathVariable UUID reservationId, @RequestBody @Validated NewReservationDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
+        }
+        return this.reservationService.findByIdAndUpdate(reservationId, payload);
+    }
+
     @GetMapping("/{reservationId}")
     public Reservation findById(@PathVariable UUID reservationId) {
         return this.reservationService.findById(reservationId);

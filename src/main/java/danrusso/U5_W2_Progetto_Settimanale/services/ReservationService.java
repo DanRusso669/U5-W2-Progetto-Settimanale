@@ -48,7 +48,7 @@ public class ReservationService {
         Reservation newReser = new Reservation(foundJou, foundEmp, LocalDate.now(), payload.notes());
 
         Reservation savedReser = this.reservationRepository.save(newReser);
-        System.out.println("Tutto bene");
+        System.out.println("Reservation with id " + savedReser.getReservationId() + " saved successfully.");
         return savedReser;
     }
 
@@ -56,20 +56,21 @@ public class ReservationService {
         return this.reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(id, "Reservation"));
     }
 
-//    public Reservation findByIdAndUpdate(UUID id, NewReservationDTO payload) {
-//        Reservation found = this.findById(id);
-//
-//        if (payload.date().isBefore(LocalDate.now())) status = JourneyType.COMPLETED;
-//
-//        found.setDate(payload.date());
-//        found.setDestination(payload.destination());
-//        found.setStatus(status);
-//
-//        Journey updatedJourney = this.journeyRepository.save(found);
-//        System.out.println("Journey with id " + found.getJourneyId() + " updated successfully.");
-//        return updatedJourney;
-//
-//    }
+    public Reservation findByIdAndUpdate(UUID id, NewReservationDTO payload) {
+        Reservation found = this.findById(id);
+        Employee foundEmp = this.employeeService.findById(payload.employeeId());
+        Journey foundJou = this.journeyService.findById(payload.journeyId());
+        if (foundJou.getStatus().equals(JourneyType.COMPLETED))
+            throw new BadRequestException("You cannot book a completed trip.");
+        List<Reservation> foundList = this.reservationRepository.filterByEmployee(foundEmp.getEmployeeId(), foundJou.getDate());
+        if (!foundList.isEmpty()) throw new ToManyReservationsException("You already have a booking for that date.");
+        found.setJourney(foundJou);
+        found.setNotes(payload.notes());
+
+        Reservation savedReser = this.reservationRepository.save(found);
+        System.out.println("Reservation with id " + savedReser.getReservationId() + " updated successfully.");
+        return savedReser;
+    }
 
     public void findByIdAndDelete(UUID id) {
         this.reservationRepository.delete(this.findById(id));
