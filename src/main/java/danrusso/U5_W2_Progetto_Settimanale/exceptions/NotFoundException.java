@@ -1,4 +1,4 @@
-package danrusso.U5_W2_Progetto_Settimanale.payloads;
+package danrusso.U5_W2_Progetto_Settimanale.exceptions;
 
 import java.util.UUID;
 

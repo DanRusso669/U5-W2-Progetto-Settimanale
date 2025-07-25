@@ -2,7 +2,6 @@ package danrusso.U5_W2_Progetto_Settimanale.exceptions;
 
 import danrusso.U5_W2_Progetto_Settimanale.payloads.ErrorsDTO;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.ErrorsPayloadListDTO;
-import danrusso.U5_W2_Progetto_Settimanale.payloads.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +15,18 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsPayloadListDTO handleValidationException(ValidationException ex) {
         return new ErrorsPayloadListDTO(ex.getMessage(), LocalDateTime.now(), ex.getErrorMessages());
+    }
+
+    @ExceptionHandler(BadRequestEmailException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsDTO handleBadRequestEmailException(BadRequestEmailException ex) {
+        return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorsDTO handleBadRequestException(BadRequestException ex) {
+        return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(NotFoundException.class)

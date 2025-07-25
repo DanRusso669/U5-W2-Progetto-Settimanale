@@ -2,8 +2,10 @@ package danrusso.U5_W2_Progetto_Settimanale.services;
 
 import danrusso.U5_W2_Progetto_Settimanale.entities.Journey;
 import danrusso.U5_W2_Progetto_Settimanale.enums.JourneyType;
+import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
+import danrusso.U5_W2_Progetto_Settimanale.exceptions.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewJourneyDTO;
-import danrusso.U5_W2_Progetto_Settimanale.payloads.NotFoundException;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewStatusDTO;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.JourneyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,5 +60,23 @@ public class JourneyService {
 
     public void findByIdAndDelete(UUID id) {
         this.journeyRepository.delete(this.findById(id));
+    }
+
+    public Journey findByIdAndChangeStatus(UUID id, NewStatusDTO newStatus) {
+        Journey found = this.findById(id);
+        if (newStatus.status().equalsIgnoreCase("completed")) {
+            if (found.getDate().isAfter(LocalDate.now()))
+                throw new BadRequestException("A future journey cannot be completed.");
+            found.setStatus(JourneyType.COMPLETED);
+        } else if (newStatus.status().equalsIgnoreCase("scheduled")) {
+            if (found.getDate().isBefore(LocalDate.now()))
+                throw new BadRequestException("A past journey cannot be scheduled.");
+            found.setStatus(JourneyType.SCHEDULED);
+        } else {
+            throw new BadRequestException("Bad Request format.");
+        }
+        Journey updatedJourney = this.journeyRepository.save(found);
+        System.out.println("Status of journey with id " + found.getJourneyId() + " updated successfully.");
+        return updatedJourney;
     }
 }

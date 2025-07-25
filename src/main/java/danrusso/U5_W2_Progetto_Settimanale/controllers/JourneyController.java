@@ -3,6 +3,7 @@ package danrusso.U5_W2_Progetto_Settimanale.controllers;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Journey;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.ValidationException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewJourneyDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewStatusDTO;
 import danrusso.U5_W2_Progetto_Settimanale.services.JourneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -54,5 +55,13 @@ public class JourneyController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID journeyId) {
         this.journeyService.findByIdAndDelete(journeyId);
+    }
+
+    @PatchMapping("/{journeyId}/status")
+    public Journey findByIdAndChangeStatus(@PathVariable UUID journeyId, @RequestBody @Validated NewStatusDTO newStatus, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        }
+        return this.journeyService.findByIdAndChangeStatus(journeyId, newStatus);
     }
 }

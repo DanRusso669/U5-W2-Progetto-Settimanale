@@ -3,9 +3,9 @@ package danrusso.U5_W2_Progetto_Settimanale.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
-import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
+import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestEmailException;
+import danrusso.U5_W2_Progetto_Settimanale.exceptions.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeeDTO;
-import danrusso.U5_W2_Progetto_Settimanale.payloads.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class EmployeeService {
 
     public Employee saveEmployee(NewEmployeeDTO payload) {
         this.employeeRepository.findByEmail(payload.email()).ifPresent(employee -> {
-            throw new BadRequestException(payload.email());
+            throw new BadRequestEmailException(payload.email());
         });
 
         Employee newEmployee = new Employee(payload.username(), payload.name(), payload.surname(), payload.email());
@@ -54,7 +54,7 @@ public class EmployeeService {
 
         if (!found.getEmail().equals(payload.email())) {
             this.employeeRepository.findByEmail(payload.email()).ifPresent(employee -> {
-                throw new BadRequestException(payload.email());
+                throw new BadRequestEmailException(payload.email());
             });
         }
 
@@ -82,7 +82,7 @@ public class EmployeeService {
             this.employeeRepository.save(found);
             return imageUrl;
         } catch (Exception ex) {
-            throw new BadRequestException("Something went wrong while saving the image.");
+            throw new BadRequestEmailException("Something went wrong while saving the image.");
         }
     }
 }
