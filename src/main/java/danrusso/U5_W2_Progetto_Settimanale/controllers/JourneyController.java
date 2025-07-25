@@ -41,4 +41,18 @@ public class JourneyController {
     public Journey findById(@PathVariable UUID journeyId) {
         return this.journeyService.findById(journeyId);
     }
+
+    @PutMapping("/{journeyId}")
+    public Journey findByIdAndUpdate(@PathVariable UUID journeyId, @RequestBody @Validated NewJourneyDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
+        }
+        return this.journeyService.findByIdAndUpdate(journeyId, payload);
+    }
+
+    @DeleteMapping("/{journeyId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable UUID journeyId) {
+        this.journeyService.findByIdAndDelete(journeyId);
+    }
 }

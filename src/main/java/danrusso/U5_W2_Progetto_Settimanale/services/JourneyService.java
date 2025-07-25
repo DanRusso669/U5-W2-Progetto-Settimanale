@@ -28,8 +28,8 @@ public class JourneyService {
     }
 
     public Journey saveJourney(NewJourneyDTO payload) {
-        JourneyType status = JourneyType.COMPLETED;
-        if (payload.date().isAfter(LocalDate.now())) status = JourneyType.SCHEDULED;
+        JourneyType status = JourneyType.SCHEDULED;
+        if (payload.date().isBefore(LocalDate.now())) status = JourneyType.COMPLETED;
 
         Journey newJourney = new Journey(payload.destination(), payload.date(), status);
         Journey savedJourney = this.journeyRepository.save(newJourney);
@@ -40,8 +40,23 @@ public class JourneyService {
     public Journey findById(UUID id) {
         return this.journeyRepository.findById(id).orElseThrow(() -> new NotFoundException(id, "Journey"));
     }
-//
-//    public Journey findByIdAndUpdate(UUID id, NewJourneyDTO payload){
-//
-//    }
+
+    public Journey findByIdAndUpdate(UUID id, NewJourneyDTO payload) {
+        Journey found = this.findById(id);
+        JourneyType status = JourneyType.SCHEDULED;
+        if (payload.date().isBefore(LocalDate.now())) status = JourneyType.COMPLETED;
+
+        found.setDate(payload.date());
+        found.setDestination(payload.destination());
+        found.setStatus(status);
+
+        Journey updatedJourney = this.journeyRepository.save(found);
+        System.out.println("Journey with id " + found.getJourneyId() + " updated successfully.");
+        return updatedJourney;
+
+    }
+
+    public void findByIdAndDelete(UUID id) {
+        this.journeyRepository.delete(this.findById(id));
+    }
 }
