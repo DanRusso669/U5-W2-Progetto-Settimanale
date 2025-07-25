@@ -1,10 +1,7 @@
 package danrusso.U5_W2_Progetto_Settimanale.entities;
 
 import danrusso.U5_W2_Progetto_Settimanale.enums.JourneyType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -17,6 +14,7 @@ public class Journey {
     private UUID journeyId;
     private String destination;
     private LocalDate date;
+    @Enumerated(EnumType.STRING)
     private JourneyType status;
 
     public Journey() {
@@ -32,11 +30,11 @@ public class Journey {
         return journeyId;
     }
 
-    public String getDestinationId() {
+    public String getDestination() {
         return destination;
     }
 
-    public void setDestinationId(String destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
     }
 

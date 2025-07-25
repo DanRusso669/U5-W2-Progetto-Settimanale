@@ -2,7 +2,7 @@ package danrusso.U5_W2_Progetto_Settimanale.services;
 
 import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
-import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeesDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeeDTO;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class EmployeeService {
         return this.employeeRepository.findAll(pageable);
     }
 
-    public Employee saveEmployee(NewEmployeesDTO payload) {
+    public Employee saveEmployee(NewEmployeeDTO payload) {
         this.employeeRepository.findByEmail(payload.email()).ifPresent(employee -> {
             throw new BadRequestException(payload.email());
         });
@@ -42,7 +42,7 @@ public class EmployeeService {
         return this.employeeRepository.findById(employeeId).orElseThrow(() -> new NotFoundException(employeeId, "Employee"));
     }
 
-    public Employee findByIdAndUpdate(NewEmployeesDTO payload, UUID employeeId) {
+    public Employee findByIdAndUpdate(NewEmployeeDTO payload, UUID employeeId) {
         Employee found = this.findById(employeeId);
 
         if (!found.getEmail().equals(payload.email())) {

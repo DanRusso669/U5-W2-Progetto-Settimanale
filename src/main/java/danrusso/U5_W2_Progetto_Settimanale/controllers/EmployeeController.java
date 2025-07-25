@@ -2,9 +2,10 @@ package danrusso.U5_W2_Progetto_Settimanale.controllers;
 
 import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.ValidationException;
-import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeesDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewEmployeeDTO;
 import danrusso.U5_W2_Progetto_Settimanale.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -28,9 +29,9 @@ public class EmployeeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee createEmployee(@RequestBody @Validated NewEmployeesDTO payload, BindingResult validationErrors) {
-        if (validationErrors.hasErrors()) {
-            throw new ValidationException(validationErrors.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+    public Employee createEmployee(@RequestBody @Validated NewEmployeeDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
         }
         return this.employeeService.saveEmployee(payload);
     }
@@ -41,9 +42,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/{employeeId}")
-    public Employee findByIdAndUpdate(@PathVariable UUID employeeId, @RequestBody @Validated NewEmployeesDTO payload, BindingResult validationErrors) {
-        if (validationErrors.hasErrors()) {
-            throw new ValidationException(validationErrors.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+    public Employee findByIdAndUpdate(@PathVariable UUID employeeId, @RequestBody @Validated NewEmployeeDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
         }
         return this.employeeService.findByIdAndUpdate(payload, employeeId);
     }

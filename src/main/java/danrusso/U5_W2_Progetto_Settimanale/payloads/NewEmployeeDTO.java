@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record NewEmployeesDTO(
+public record NewEmployeeDTO(
         @NotBlank
         @Size(min = 3, max = 15, message = "Surname's lenght must be between 3 and 15.")
         String username,
